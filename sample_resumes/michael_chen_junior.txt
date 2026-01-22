@@ -1,0 +1,98 @@
+MICHAEL CHEN
+Junior Software Developer
+
+Email: michael.chen@outlook.com
+Phone: 555-456-7890
+Location: Seattle, WA
+GitHub: github.com/michaelchen
+LinkedIn: linkedin.com/in/michael-chen-dev
+
+==============================================================================
+OBJECTIVE
+==============================================================================
+Recent Computer Science graduate seeking an entry-level software developer 
+position. Eager to apply my programming skills and learn from experienced 
+professionals. Strong foundation in Python and web development fundamentals.
+
+==============================================================================
+EDUCATION
+==============================================================================
+Bachelor of Science in Computer Science
+University of Washington, Seattle | Graduated: May 2023
+GPA: 3.5/4.0
+
+Relevant Coursework:
+- Data Structures and Algorithms
+- Object-Oriented Programming
+- Web Development
+- Database Management Systems
+- Software Engineering Principles
+
+==============================================================================
+TECHNICAL SKILLS
+==============================================================================
+Languages:        Python, JavaScript, Java, C++, HTML, CSS
+Frameworks:       React (basic), Django (basic), Flask
+Databases:        MySQL, SQLite, MongoDB (basic)
+Tools:            Git, VS Code, Linux, Postman
+Concepts:         REST APIs, Agile/Scrum, Unit Testing
+
+==============================================================================
+INTERNSHIP EXPERIENCE
+==============================================================================
+
+SOFTWARE DEVELOPER INTERN
+TechStartup Inc. | Seattle, WA | June 2022 - August 2022
+
+• Developed features for internal dashboard using Python and Flask
+• Fixed 25+ bugs in the existing codebase
+• Participated in daily standup meetings and sprint planning
+• Wrote unit tests improving code coverage by 15%
+• Collaborated with senior developers on code reviews
+
+WEB DEVELOPMENT INTERN
+LocalBusiness Web Agency | Seattle, WA | Summer 2021
+
+• Built responsive landing pages for small business clients
+• Updated existing websites with new content and features
+• Learned version control with Git and GitHub
+• Assisted in basic SEO optimization
+
+==============================================================================
+ACADEMIC PROJECTS
+==============================================================================
+
+E-Learning Platform (Senior Capstone Project)
+Python, Django, PostgreSQL, React
+- Built a full-stack online learning platform
+- Implemented user authentication and course management
+- Team project with 4 members using Agile methodology
+- Received A grade and faculty commendation
+
+Personal Budget Tracker
+Python, Flask, SQLite, Bootstrap
+- Created a web app to track personal expenses
+- Features: expense categories, monthly reports, data visualization
+- Deployed on Heroku for personal use
+
+Algorithm Visualizer
+JavaScript, HTML5 Canvas, CSS
+- Interactive tool to visualize sorting algorithms
+- Includes Bubble Sort, Quick Sort, Merge Sort
+- Educational project to help students learn algorithms
+
+==============================================================================
+ACTIVITIES & ACHIEVEMENTS
+==============================================================================
+• Member, UW Computer Science Club (2020-2023)
+• Participant, HackTheNorth Hackathon 2022
+• Dean's List, Fall 2021 and Spring 2022
+• Volunteer, Code.org Hour of Code events
+
+==============================================================================
+ADDITIONAL INFORMATION
+==============================================================================
+• Available for immediate start
+• Open to relocation
+• Authorized to work in the United States
+• Languages: English (fluent), Mandarin (native)

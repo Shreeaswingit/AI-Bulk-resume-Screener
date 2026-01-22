@@ -1,0 +1,72 @@
+JOHN SMITH
+Senior Software Engineer
+
+Email: john.smith@email.com
+Phone: +1 (555) 123-4567
+Location: San Francisco, CA
+LinkedIn: linkedin.com/in/johnsmith
+GitHub: github.com/johnsmith
+
+================================================================================
+PROFESSIONAL SUMMARY
+================================================================================
+Experienced Senior Software Engineer with 7+ years of expertise in full-stack 
+development. Proficient in Python, JavaScript, React, Node.js, and cloud 
+technologies. Strong background in building scalable web applications and 
+leading development teams. Passionate about clean code and best practices.
+
+================================================================================
+TECHNICAL SKILLS
+================================================================================
+Languages:      Python, JavaScript, TypeScript, Java, SQL
+Frontend:       React, Vue.js, Angular, HTML5, CSS3, Tailwind CSS
+Backend:        Node.js, Django, FastAPI, Express.js, Spring Boot
+Databases:      PostgreSQL, MongoDB, MySQL, Redis
+Cloud:          AWS (EC2, S3, Lambda, RDS), Google Cloud Platform, Docker
+Tools:          Git, Jenkins, Kubernetes, Terraform, JIRA
+
+================================================================================
+WORK EXPERIENCE
+================================================================================
+
+SENIOR SOFTWARE ENGINEER | TechCorp Inc. | Jan 2021 - Present
+- Led development of microservices architecture serving 2M+ daily users
+- Reduced API response time by 40% through optimization and caching
+- Mentored team of 5 junior developers
+- Implemented CI/CD pipelines reducing deployment time by 60%
+- Technologies: Python, FastAPI, React, PostgreSQL, AWS, Docker
+
+SOFTWARE ENGINEER | StartupXYZ | Jun 2018 - Dec 2020
+- Built real-time dashboard using React and WebSockets
+- Developed RESTful APIs handling 100K+ requests per day
+- Integrated third-party payment systems (Stripe, PayPal)
+- Technologies: JavaScript, Node.js, React, MongoDB, AWS
+
+JUNIOR DEVELOPER | WebSolutions LLC | Mar 2016 - May 2018
+- Developed responsive web applications using modern frameworks
+- Collaborated with design team to implement UI/UX improvements
+- Technologies: JavaScript, Angular, PHP, MySQL
+
+================================================================================
+EDUCATION
+================================================================================
+Bachelor of Science in Computer Science
+Stanford University | 2012 - 2016
+GPA: 3.8/4.0
+
+================================================================================
+CERTIFICATIONS
+================================================================================
+- AWS Certified Solutions Architect
+- Google Cloud Professional Developer
+- Certified Kubernetes Administrator (CKA)
+
+================================================================================
+PROJECTS
+================================================================================
+E-Commerce Platform: Built full-stack e-commerce solution with React, Node.js, 
+and PostgreSQL. Features include real-time inventory, payment processing, and 
+admin dashboard. GitHub: github.com/johnsmith/ecommerce
+
+Open Source Contributions: Active contributor to popular Python and JavaScript 
+libraries including FastAPI and React Query.

@@ -1,0 +1,100 @@
+SARAH JOHNSON
+Full Stack Developer
+
+Contact Information:
+Email: sarah.johnson@gmail.com
+Phone: (555) 987-6543
+Location: Austin, Texas
+Portfolio: sarahjohnson.dev
+LinkedIn: linkedin.com/in/sarahjohnson
+
+--------------------------------------------------------------------------------
+                              ABOUT ME
+--------------------------------------------------------------------------------
+Creative and detail-oriented Full Stack Developer with 4 years of experience 
+building modern web applications. Specialized in React ecosystem and Python 
+backend development. Strong problem-solving skills and excellent communication 
+abilities. Looking for challenging opportunities to grow and contribute.
+
+--------------------------------------------------------------------------------
+                              SKILLS
+--------------------------------------------------------------------------------
+Programming Languages:
+  • Python (Advanced)
+  • JavaScript/TypeScript (Advanced)
+  • HTML5/CSS3 (Expert)
+  • SQL (Intermediate)
+
+Frameworks & Libraries:
+  • React.js, Next.js, Redux
+  • Django, Flask
+  • Express.js
+  • Tailwind CSS, Material-UI
+
+Tools & Technologies:
+  • Git, GitHub, GitLab
+  • Docker, Kubernetes basics
+  • PostgreSQL, MongoDB
+  • AWS (S3, EC2, Lambda)
+  • Figma, Adobe XD
+
+--------------------------------------------------------------------------------
+                          WORK EXPERIENCE
+--------------------------------------------------------------------------------
+
+FULL STACK DEVELOPER
+Digital Agency Pro | Austin, TX | March 2022 - Present
+
+• Developed and maintained 15+ client websites using React and Next.js
+• Built RESTful APIs using Django and FastAPI for mobile applications
+• Improved website performance scores from 65 to 95 on Google Lighthouse
+• Collaborated with UX designers to implement responsive designs
+• Set up automated testing with Jest and Pytest (80% code coverage)
+
+FRONTEND DEVELOPER
+WebStart Solutions | Remote | June 2020 - February 2022
+
+• Created interactive dashboards using React and D3.js
+• Implemented state management solutions with Redux and Context API
+• Developed reusable component libraries used across 5 projects
+• Participated in code reviews and mentored 2 interns
+
+JUNIOR WEB DEVELOPER
+LocalTech Company | Austin, TX | January 2019 - May 2020
+
+• Built responsive websites using HTML, CSS, and JavaScript
+• Learned React and contributed to team projects
+• Assisted in database design and API development
+
+--------------------------------------------------------------------------------
+                              EDUCATION
+--------------------------------------------------------------------------------
+Bachelor of Science in Information Technology
+University of Texas at Austin | 2015 - 2019
+Relevant Coursework: Data Structures, Web Development, Database Systems
+
+Online Certifications:
+• Meta Front-End Developer Professional Certificate (2023)
+• AWS Cloud Practitioner (2022)
+• Google UX Design Certificate (2021)
+
+--------------------------------------------------------------------------------
+                              PROJECTS
+--------------------------------------------------------------------------------
+Task Management App (Personal Project)
+React, Node.js, MongoDB, Socket.io
+- Real-time collaboration features
+- Drag-and-drop interface
+- User authentication with JWT
+- 500+ active users
+
+Weather Dashboard (Open Source)
+React, OpenWeather API, Chart.js
+- Location-based weather forecasts
+- Historical data visualization
+- 200+ GitHub stars
+
+--------------------------------------------------------------------------------
+                              LANGUAGES
+--------------------------------------------------------------------------------
+English (Native), Spanish (Conversational)

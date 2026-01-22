@@ -1,0 +1,178 @@
+import { useState } from 'react';
+
+export default function JobDescriptionForm({ onSubmit, onSubmitPuter, isLoading, usePuterAI, onToggleAIMode }) {
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        requiredSkills: '',
+        preferredSkills: '',
+        minExperience: ''
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const jobDescription = {
+            title: formData.title,
+            description: formData.description,
+            required_skills: formData.requiredSkills.split(',').map(s => s.trim()).filter(Boolean),
+            preferred_skills: formData.preferredSkills.split(',').map(s => s.trim()).filter(Boolean),
+            min_experience_years: formData.minExperience ? parseFloat(formData.minExperience) : null
+        };
+
+        if (usePuterAI && onSubmitPuter) {
+            onSubmitPuter(jobDescription);
+        } else {
+            onSubmit(jobDescription);
+        }
+    };
+
+    const parseSkills = (skillsStr) => {
+        return skillsStr.split(',').map(s => s.trim()).filter(Boolean);
+    };
+
+    return (
+        <div className="card animate-slideUp" style={{ animationDelay: '0.1s' }}>
+            <div className="card-header">
+                <h3 className="card-title">📝 Job Description</h3>
+            </div>
+
+            {/* AI Mode Toggle */}
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 'var(--spacing-md)',
+                padding: 'var(--spacing-md)',
+                background: usePuterAI ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)',
+                borderRadius: 'var(--radius-md)',
+                marginBottom: 'var(--spacing-lg)',
+                transition: 'all 0.3s ease'
+            }}>
+                <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '600', fontSize: 'var(--font-size-sm)' }}>
+                        {usePuterAI ? '🆓 Free AI Mode (Puter.js)' : '🔧 Backend AI Mode (Gemini)'}
+                    </div>
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                        {usePuterAI
+                            ? 'Using Claude Sonnet 4 via Puter.js - No API key needed!'
+                            : 'Using Gemini API - Requires API key in backend'}
+                    </div>
+                </div>
+                <div
+                    className="theme-toggle"
+                    onClick={onToggleAIMode}
+                    style={{
+                        background: usePuterAI ? 'var(--accent-success)' : 'var(--bg-tertiary)'
+                    }}
+                >
+                    <div
+                        className="theme-toggle-knob"
+                        style={{
+                            transform: usePuterAI ? 'translateX(28px)' : 'translateX(0)',
+                            background: usePuterAI ? 'white' : 'var(--gradient-primary)'
+                        }}
+                    ></div>
+                </div>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label className="form-label">Job Title *</label>
+                    <input
+                        type="text"
+                        name="title"
+                        className="form-input"
+                        placeholder="e.g., Senior Software Engineer"
+                        value={formData.title}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">Job Description *</label>
+                    <textarea
+                        name="description"
+                        className="form-textarea"
+                        placeholder="Describe the role, responsibilities, and ideal candidate..."
+                        value={formData.description}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">Required Skills (comma-separated) *</label>
+                    <input
+                        type="text"
+                        name="requiredSkills"
+                        className="form-input"
+                        placeholder="e.g., Python, React, AWS, PostgreSQL"
+                        value={formData.requiredSkills}
+                        onChange={handleChange}
+                        required
+                    />
+                    {formData.requiredSkills && (
+                        <div style={{ marginTop: 'var(--spacing-sm)', display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
+                            {parseSkills(formData.requiredSkills).map((skill, i) => (
+                                <span key={i} className="skill-tag matched">{skill}</span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">Preferred Skills (comma-separated)</label>
+                    <input
+                        type="text"
+                        name="preferredSkills"
+                        className="form-input"
+                        placeholder="e.g., Docker, Kubernetes, GraphQL"
+                        value={formData.preferredSkills}
+                        onChange={handleChange}
+                    />
+                    {formData.preferredSkills && (
+                        <div style={{ marginTop: 'var(--spacing-sm)', display: 'flex', flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
+                            {parseSkills(formData.preferredSkills).map((skill, i) => (
+                                <span key={i} className="skill-tag">{skill}</span>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label">Minimum Years of Experience</label>
+                    <input
+                        type="number"
+                        name="minExperience"
+                        className="form-input"
+                        placeholder="e.g., 3"
+                        min="0"
+                        step="0.5"
+                        value={formData.minExperience}
+                        onChange={handleChange}
+                        style={{ maxWidth: '150px' }}
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    className={`btn ${usePuterAI ? 'btn-success' : 'btn-primary'}`}
+                    disabled={isLoading || !formData.title || !formData.description || !formData.requiredSkills}
+                    style={{ width: '100%', marginTop: 'var(--spacing-md)' }}
+                >
+                    {isLoading ? (
+                        <>⏳ Analyzing Resumes...</>
+                    ) : (
+                        <>{usePuterAI ? '🆓' : '🔍'} Start Screening {usePuterAI ? '(Free AI)' : ''}</>
+                    )}
+                </button>
+            </form>
+        </div>
+    );
+}
