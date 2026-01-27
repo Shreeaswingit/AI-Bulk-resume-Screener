@@ -8,7 +8,6 @@ import CandidateCard from './components/CandidateCard';
 import CandidateModal from './components/CandidateModal';
 import ScreeningProgress from './components/ScreeningProgress';
 import * as api from './services/api';
-import { analyzeResumeWithPuter } from './services/puterAI';
 
 function App() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -24,10 +23,25 @@ function App() {
   const [fileContents, setFileContents] = useState({}); // Store file text for Puter AI
   const [statusMessage, setStatusMessage] = useState(null);
   const [filter, setFilter] = useState('all');
-  const [usePuterAI, setUsePuterAI] = useState(true); // Default to free Puter AI
+  const [apiStatus, setApiStatus] = useState(null); // Track API health
+
+  // Check API health on mount
+  const checkApiHealth = async () => {
+    try {
+      const health = await api.healthCheck();
+      setApiStatus(health);
+      if (health.ai_error) {
+        setStatusMessage({ type: 'error', text: health.ai_error, persistent: true });
+      }
+    } catch (error) {
+      setApiStatus({ ai_error: 'Backend server not running. Start with: python run.py' });
+      setStatusMessage({ type: 'error', text: 'Backend server not running', persistent: true });
+    }
+  };
 
   // Load data on mount
   useEffect(() => {
+    checkApiHealth();
     loadCandidates();
     loadStats();
   }, []);
@@ -55,22 +69,7 @@ function App() {
     }
   };
 
-  // Read file as text for Puter AI analysis
-  const readFileAsText = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = reject;
 
-      // For PDFs and DOCX, we need to send to backend first or use arraybuffer
-      if (file.name.endsWith('.pdf') || file.name.endsWith('.docx')) {
-        // Read as text - backend will parse
-        reader.readAsText(file);
-      } else {
-        reader.readAsText(file);
-      }
-    });
-  };
 
   const handleFilesSelected = async (files) => {
     setIsUploading(true);
@@ -102,7 +101,10 @@ function App() {
 
   // Backend Gemini analysis
   const handleAnalyze = async (jobDescription) => {
-    if (uploadedFiles.length === 0 && candidates.filter(c => c.status === 'pending').length === 0) {
+    // Check if there are any candidates to analyze (either just uploaded or existing pending ones)
+    const hasCandidates = uploadedFiles.length > 0 || candidates.length > 0;
+
+    if (!hasCandidates) {
       setStatusMessage({ type: 'error', text: 'Please upload resumes first' });
       return;
     }
@@ -126,12 +128,14 @@ function App() {
 
     try {
       const result = await api.analyzeResumes(jobDescription);
-      setCandidates(result.candidates || []);
       setStatusMessage({
         type: 'success',
         text: `Analyzed ${result.total_analyzed} candidates successfully!`
       });
       setProgress({ status: 'complete', progress: 100 });
+
+      // Reload all candidates to ensure we have the full list including previous ones
+      await loadCandidates();
       await loadStats();
     } catch (error) {
       setStatusMessage({ type: 'error', text: 'Analysis failed. Is the backend running with Gemini API key?' });
@@ -143,119 +147,7 @@ function App() {
     }
   };
 
-  // FREE Puter.js AI analysis
-  const handleAnalyzePuter = async (jobDescription) => {
-    if (uploadedFiles.length === 0) {
-      setStatusMessage({ type: 'error', text: 'Please upload resumes first' });
-      return;
-    }
 
-    setIsAnalyzing(true);
-    setProgress({ status: 'analyzing', progress: 0, step: 'parsing', current_file: '' });
-    setActiveSection('candidates');
-
-    const analyzedCandidates = [];
-    const total = uploadedFiles.length;
-
-    try {
-      for (let i = 0; i < uploadedFiles.length; i++) {
-        const candidate = uploadedFiles[i];
-
-        setProgress({
-          status: 'analyzing',
-          progress: Math.round((i / total) * 100),
-          step: 'analyzing',
-          current_file: candidate.filename
-        });
-
-        // Get resume text from backend (it already parsed the file)
-        let resumeText = '';
-        try {
-          const candidateData = await api.getCandidate(candidate.id);
-          // If we have summary from previous analysis, use basic info
-          resumeText = `Candidate from file: ${candidate.filename}`;
-
-          // For Puter AI, we'll send the filename and let backend parse
-          // Or we can use the raw file we stored
-          const file = fileContents[candidate.filename];
-          if (file) {
-            try {
-              resumeText = await readFileAsText(file);
-            } catch (e) {
-              console.log('Could not read file as text, using filename');
-            }
-          }
-        } catch (e) {
-          resumeText = `Resume file: ${candidate.filename}`;
-        }
-
-        try {
-          // Analyze with Puter.js FREE AI
-          const analysis = await analyzeResumeWithPuter(resumeText, jobDescription);
-
-          const analyzedCandidate = {
-            ...candidate,
-            id: candidate.id,
-            name: analysis.name || 'Unknown',
-            filename: candidate.filename,
-            status: 'analyzed',
-            contact: analysis.contact || {},
-            summary: analysis.summary || '',
-            skills: (analysis.skills || []).map(s => ({
-              name: s.name,
-              proficiency: s.proficiency,
-              years: s.years,
-              matched: s.matched || false
-            })),
-            experience: analysis.experience || [],
-            education: analysis.education || [],
-            total_experience_years: analysis.total_experience_years || 0,
-            strengths: analysis.strengths || [],
-            concerns: analysis.concerns || [],
-            match_score: analysis.match_score || 0,
-            skill_match_percentage: analysis.skill_match_percentage || 0,
-            ai_recommendation: analysis.ai_recommendation || ''
-          };
-
-          analyzedCandidates.push(analyzedCandidate);
-        } catch (error) {
-          console.error(`Failed to analyze ${candidate.filename}:`, error);
-          analyzedCandidates.push({
-            ...candidate,
-            status: 'analyzed',
-            concerns: ['AI analysis failed for this resume'],
-            match_score: 0
-          });
-        }
-      }
-
-      // Sort by match score
-      analyzedCandidates.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
-
-      setCandidates(analyzedCandidates);
-      setStats({
-        total: analyzedCandidates.length,
-        analyzed: analyzedCandidates.length,
-        shortlisted: 0,
-        rejected: 0,
-        average_score: analyzedCandidates.reduce((sum, c) => sum + (c.match_score || 0), 0) / analyzedCandidates.length || 0
-      });
-
-      setStatusMessage({
-        type: 'success',
-        text: `Analyzed ${analyzedCandidates.length} candidates with FREE AI!`
-      });
-      setProgress({ status: 'complete', progress: 100 });
-
-    } catch (error) {
-      console.error('Puter AI analysis failed:', error);
-      setStatusMessage({ type: 'error', text: 'Analysis failed. Please try again.' });
-      setProgress({ status: 'idle', progress: 0 });
-    } finally {
-      setIsAnalyzing(false);
-      setTimeout(() => setProgress({ status: 'idle', progress: 0 }), 3000);
-    }
-  };
 
   const handleShortlist = async (candidateId) => {
     // Update local state for Puter mode
@@ -321,29 +213,7 @@ function App() {
               Welcome to Resume Screener 👋
             </h1>
 
-            {/* Free AI Banner */}
-            {usePuterAI && (
-              <div style={{
-                padding: 'var(--spacing-md) var(--spacing-lg)',
-                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(59, 130, 246, 0.15))',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                marginBottom: 'var(--spacing-xl)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-md)'
-              }}>
-                <span style={{ fontSize: '24px' }}>🆓</span>
-                <div>
-                  <div style={{ fontWeight: '600', color: 'var(--accent-success)' }}>
-                    Free AI Mode Enabled
-                  </div>
-                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                    Powered by Puter.js - No API key required! Using Claude Sonnet 4.
-                  </div>
-                </div>
-              </div>
-            )}
+
 
             <StatsCards stats={stats} />
 
@@ -358,10 +228,7 @@ function App() {
               />
               <JobDescriptionForm
                 onSubmit={handleAnalyze}
-                onSubmitPuter={handleAnalyzePuter}
                 isLoading={isAnalyzing}
-                usePuterAI={usePuterAI}
-                onToggleAIMode={() => setUsePuterAI(!usePuterAI)}
               />
             </div>
           </>
@@ -378,10 +245,7 @@ function App() {
             <div style={{ marginTop: 'var(--spacing-xl)' }}>
               <JobDescriptionForm
                 onSubmit={handleAnalyze}
-                onSubmitPuter={handleAnalyzePuter}
                 isLoading={isAnalyzing}
-                usePuterAI={usePuterAI}
-                onToggleAIMode={() => setUsePuterAI(!usePuterAI)}
               />
             </div>
           </>
@@ -460,38 +324,7 @@ function App() {
             <div className="card">
               <h4 style={{ marginBottom: 'var(--spacing-lg)' }}>General Settings</h4>
 
-              {/* AI Mode Setting */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: 'var(--spacing-md) 0',
-                borderBottom: '1px solid var(--border-color)'
-              }}>
-                <div>
-                  <div style={{ fontWeight: '500' }}>
-                    {usePuterAI ? '🆓 Free AI Mode (Puter.js)' : '🔧 Backend AI (Gemini)'}
-                  </div>
-                  <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                    {usePuterAI
-                      ? 'Using Claude via Puter.js - No API key needed!'
-                      : 'Using Gemini API - Requires backend configuration'}
-                  </div>
-                </div>
-                <div
-                  className="theme-toggle"
-                  onClick={() => setUsePuterAI(!usePuterAI)}
-                  style={{ background: usePuterAI ? 'var(--accent-success)' : 'var(--bg-tertiary)' }}
-                >
-                  <div
-                    className="theme-toggle-knob"
-                    style={{
-                      transform: usePuterAI ? 'translateX(28px)' : 'translateX(0)',
-                      background: usePuterAI ? 'white' : 'var(--gradient-primary)'
-                    }}
-                  ></div>
-                </div>
-              </div>
+
 
               <div style={{
                 display: 'flex',
@@ -543,25 +376,7 @@ function App() {
                 </button>
               </div>
 
-              {/* Puter.js Info */}
-              <div style={{
-                padding: 'var(--spacing-lg)',
-                marginTop: 'var(--spacing-lg)',
-                background: 'rgba(16, 185, 129, 0.1)',
-                borderRadius: 'var(--radius-md)',
-                borderLeft: '4px solid var(--accent-success)'
-              }}>
-                <h4 style={{ marginBottom: 'var(--spacing-sm)', color: 'var(--accent-success)' }}>
-                  🆓 Free AI via Puter.js
-                </h4>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>
-                  This app uses <a href="https://puter.com" target="_blank" rel="noopener" style={{ color: 'var(--accent-success)' }}>Puter.js</a> for
-                  free AI-powered resume analysis. No API keys needed!
-                </p>
-                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--spacing-sm)' }}>
-                  Powered by Claude Sonnet 4 • Free for personal use
-                </p>
-              </div>
+
 
               {/* Backend Config (for advanced users) */}
               <div style={{

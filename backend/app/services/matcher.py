@@ -43,8 +43,9 @@ class CandidateMatcher:
             job_description.required_skills + job_description.preferred_skills
         )
         
+        
         return {
-            'match_score': round(weighted_score, 1),
+            'match_score': min(100.0, round(weighted_score, 1)),
             'skill_match_percentage': round(skill_score['required_percentage'], 1),
             'matched_skills': matched_skills,
             'missing_required_skills': skill_score['missing_required'],
@@ -149,9 +150,8 @@ class CandidateMatcher:
             return 100
         
         if candidate_years >= required_years:
-            # Bonus for extra experience, but not more than 100%
-            bonus = min(20, (candidate_years - required_years) * 5)
-            return min(100, 100 + bonus)
+            # Meet or exceed requirements = 100%
+            return 100.0
         else:
             # Penalty for less experience
             return max(0, (candidate_years / required_years) * 100)

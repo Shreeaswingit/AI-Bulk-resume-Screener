@@ -6,8 +6,12 @@ class Settings(BaseSettings):
     app_name: str = "AI Resume Screener"
     debug: bool = True
     gemini_api_key: str = ""
+    openrouter_api_key: str = ""
+    openrouter_model: str = "google/gemini-2.0-flash-exp:free"
     upload_folder: str = "./uploads"
     max_file_size: int = 10 * 1024 * 1024  # 10MB
+    rate_limit_enabled: bool = False
+    rate_limit_delay: int = 5
     
     class Config:
         env_file = ".env"

@@ -133,6 +133,15 @@ async def analyze_resumes(request: AnalysisRequest):
             candidates_db[candidate.id] = candidate
             continue
         
+        # Validate that resume has meaningful content
+        if len(resume_text.strip()) < 100:
+            candidate.status = CandidateStatus.ANALYZED
+            candidate.concerns = ["Resume file appears to be empty or has insufficient content"]
+            candidate.match_score = 0
+            candidate.skill_match_percentage = 0
+            candidates_db[candidate.id] = candidate
+            continue
+        
         # Extract basic info
         basic_info = resume_parser.extract_basic_info(resume_text)
         
@@ -151,7 +160,7 @@ async def analyze_resumes(request: AnalysisRequest):
         # Update candidate with analysis results
         screening_progress["step"] = "scoring"
         
-        candidate.name = analysis.get("name", "Unknown")
+        candidate.name = analysis.get("name") or basic_info.get("name") or "Unknown"
         candidate.summary = analysis.get("summary", "")
         candidate.contact = ContactInfo(
             email=analysis.get("contact", {}).get("email") or basic_info.get("email"),

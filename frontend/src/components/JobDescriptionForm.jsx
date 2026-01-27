@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function JobDescriptionForm({ onSubmit, onSubmitPuter, isLoading, usePuterAI, onToggleAIMode }) {
+export default function JobDescriptionForm({ onSubmit, isLoading }) {
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -25,9 +25,7 @@ export default function JobDescriptionForm({ onSubmit, onSubmitPuter, isLoading,
             min_experience_years: formData.minExperience ? parseFloat(formData.minExperience) : null
         };
 
-        if (usePuterAI && onSubmitPuter) {
-            onSubmitPuter(jobDescription);
-        } else {
+        if (onSubmit) {
             onSubmit(jobDescription);
         }
     };
@@ -42,43 +40,7 @@ export default function JobDescriptionForm({ onSubmit, onSubmitPuter, isLoading,
                 <h3 className="card-title">📝 Job Description</h3>
             </div>
 
-            {/* AI Mode Toggle */}
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-md)',
-                padding: 'var(--spacing-md)',
-                background: usePuterAI ? 'rgba(16, 185, 129, 0.1)' : 'rgba(99, 102, 241, 0.1)',
-                borderRadius: 'var(--radius-md)',
-                marginBottom: 'var(--spacing-lg)',
-                transition: 'all 0.3s ease'
-            }}>
-                <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: '600', fontSize: 'var(--font-size-sm)' }}>
-                        {usePuterAI ? '🆓 Free AI Mode (Puter.js)' : '🔧 Backend AI Mode (Gemini)'}
-                    </div>
-                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-                        {usePuterAI
-                            ? 'Using Claude Sonnet 4 via Puter.js - No API key needed!'
-                            : 'Using Gemini API - Requires API key in backend'}
-                    </div>
-                </div>
-                <div
-                    className="theme-toggle"
-                    onClick={onToggleAIMode}
-                    style={{
-                        background: usePuterAI ? 'var(--accent-success)' : 'var(--bg-tertiary)'
-                    }}
-                >
-                    <div
-                        className="theme-toggle-knob"
-                        style={{
-                            transform: usePuterAI ? 'translateX(28px)' : 'translateX(0)',
-                            background: usePuterAI ? 'white' : 'var(--gradient-primary)'
-                        }}
-                    ></div>
-                </div>
-            </div>
+
 
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -162,14 +124,14 @@ export default function JobDescriptionForm({ onSubmit, onSubmitPuter, isLoading,
 
                 <button
                     type="submit"
-                    className={`btn ${usePuterAI ? 'btn-success' : 'btn-primary'}`}
+                    className="btn btn-primary"
                     disabled={isLoading || !formData.title || !formData.description || !formData.requiredSkills}
                     style={{ width: '100%', marginTop: 'var(--spacing-md)' }}
                 >
                     {isLoading ? (
                         <>⏳ Analyzing Resumes...</>
                     ) : (
-                        <>{usePuterAI ? '🆓' : '🔍'} Start Screening {usePuterAI ? '(Free AI)' : ''}</>
+                        <>🔍 Start Screening</>
                     )}
                 </button>
             </form>

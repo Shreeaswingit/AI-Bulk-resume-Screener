@@ -105,9 +105,40 @@ class ResumeParser:
         
         return text.strip()
     
+    def _extract_name(self, text: str) -> Optional[str]:
+        """Extract candidate name from resume (usually in first few lines)"""
+        if not text:
+            return None
+        
+        # Get first 5 lines
+        lines = [line.strip() for line in text.split('\n')[:5] if line.strip()]
+        
+        if not lines:
+            return None
+        
+        # First line is often the name if it's all caps or title case
+        first_line = lines[0]
+        
+        # Check if first line looks like a name (2-4 words, mostly letters)
+        words = first_line.split()
+        if 2 <= len(words) <= 4:
+            # Check if it's mostly alphabetic (allowing for spaces and hyphens)
+            if re.match(r'^[A-Za-z\s\-\.]+$', first_line):
+                return first_line.title()
+        
+        # Try second line if first didn't work
+        if len(lines) > 1:
+            second_line = lines[1]
+            words = second_line.split()
+            if 2 <= len(words) <= 4 and re.match(r'^[A-Za-z\s\-\.]+$', second_line):
+                return second_line.title()
+        
+        return None
+    
     def extract_basic_info(self, text: str) -> dict:
         """Extract basic information using regex patterns"""
         info = {
+            'name': self._extract_name(text),
             'email': None,
             'phone': None,
             'linkedin': None,

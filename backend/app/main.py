@@ -42,4 +42,14 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy", "api_configured": bool(settings.gemini_api_key)}
+    from .services import ai_analyzer
+    ai_status = ai_analyzer.get_status()
+    return {
+        "status": "healthy",
+        "ai_status": ai_status.get("status", "unknown"),
+        "ai_error": ai_status.get("error"),
+        "ai_provider": ai_status.get("provider"),
+        "gemini_configured": ai_status.get("gemini_configured", False),
+        "openrouter_configured": ai_status.get("openrouter_configured", False)
+    }
+
