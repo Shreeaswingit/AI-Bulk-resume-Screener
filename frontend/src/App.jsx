@@ -7,7 +7,9 @@ import StatsCards from './components/StatsCards';
 import CandidateCard from './components/CandidateCard';
 import CandidateModal from './components/CandidateModal';
 import ScreeningProgress from './components/ScreeningProgress';
+import Login from './components/Login';
 import * as api from './services/api';
+import confetti from 'canvas-confetti';
 
 function App() {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -24,6 +26,8 @@ function App() {
   const [statusMessage, setStatusMessage] = useState(null);
   const [filter, setFilter] = useState('all');
   const [apiStatus, setApiStatus] = useState(null); // Track API health
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   // Check API health on mount
   const checkApiHealth = async () => {
@@ -41,15 +45,62 @@ function App() {
 
   // Load data on mount
   useEffect(() => {
-    checkApiHealth();
-    loadCandidates();
-    loadStats();
+    const savedUser = localStorage.getItem('screener_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+      setIsLoggedIn(true);
+    }
   }, []);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      checkApiHealth();
+      loadCandidates();
+      loadStats();
+    }
+  }, [isLoggedIn]);
 
   // Apply theme
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
+
+  const handleLogin = (username) => {
+    const userData = { name: username, loginTime: new Date().toISOString() };
+    setUser(userData);
+    setIsLoggedIn(true);
+    localStorage.setItem('screener_user', JSON.stringify(userData));
+
+    // Celebration!
+    const duration = 3 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+
+    setStatusMessage({ type: 'success', text: `Welcome back, ${username}! 🎉` });
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    localStorage.removeItem('screener_user');
+    setStatusMessage({ type: 'info', text: 'Logged out successfully' });
+  };
 
   const loadCandidates = async () => {
     try {
@@ -411,6 +462,10 @@ function App() {
     }
   };
 
+  if (!isLoggedIn) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <div className="app-container">
       <Sidebar
@@ -418,9 +473,38 @@ function App() {
         onSectionChange={setActiveSection}
         onThemeToggle={() => setIsDarkMode(!isDarkMode)}
         isDarkMode={isDarkMode}
+        onLogout={handleLogout}
+        user={user}
       />
 
       <main className="main-content">
+        {/* Celebration Header - Only shown after login briefly */}
+        {user && !user.hideWelcome && (
+          <div style={{
+            padding: 'var(--spacing-md) var(--spacing-xl)',
+            marginBottom: 'var(--spacing-lg)',
+            background: 'var(--gradient-primary)',
+            borderRadius: 'var(--radius-md)',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: 'var(--shadow-md)',
+            animation: 'fadeInDown 0.8s'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-md)' }}>
+              <span style={{ fontSize: '24px' }}>✨</span>
+              <span style={{ fontWeight: '600' }}>Welcome, {user.name}! Ready to screen some resumes today?</span>
+            </div>
+            <button
+              className="btn btn-ghost"
+              style={{ color: 'white', padding: 'var(--spacing-xs)' }}
+              onClick={() => setUser({ ...user, hideWelcome: true })}
+            >
+              ✕
+            </button>
+          </div>
+        )}
         {/* Status Message Toast */}
         {statusMessage && (
           <div
