@@ -14,7 +14,9 @@ An AI-powered platform for intelligent resume screening and automated candidate 
 
 ```bash
 cd backend
-pip install -r requirements.txt
+python -m venv venv (one time onl)
+venv\Scripts\activate
+pip install -r requirements.txt   (one time only)
 # Create .env file with GEMINI_API_KEY=your_key
 uvicorn app.main:app --reload --port 8000
 ```
