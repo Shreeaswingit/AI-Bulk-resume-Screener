@@ -20,6 +20,14 @@ pip install -r requirements.txt   (one time only)
 # Create .env file with GEMINI_API_KEY=your_key
 uvicorn app.main:app --reload --port 8000
 ```
+### TARA SETUP
+```bash
+Make sure you are outside bakend folder if  you are inside backend folder type cd..
+venv\Scripts\activate
+cd backend
+# Create .env file with GEMINI_API_KEY=your_key
+uvicorn app.main:app --reload --port 8000
+```
 
 ### Frontend Setup
 
