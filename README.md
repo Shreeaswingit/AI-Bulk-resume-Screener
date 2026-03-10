@@ -22,6 +22,7 @@ uvicorn app.main:app --reload --port 8000
 ```
 ### TARA SETUP
 ```bash
+Make sure you open new terminal
 Make sure you are outside bakend folder if  you are inside backend folder type cd..
 venv\Scripts\activate
 cd backend
@@ -32,6 +33,15 @@ uvicorn app.main:app --reload --port 8000
 ### Frontend Setup
 
 ```bash
+cd frontend
+npm install
+npm run dev
+```
+### TARA SETUP
+```bash
+Make sure you open new terminal
+Make sure you are outside frondend/backend folder if  you are inside backend/frontend folder type cd..
+
 cd frontend
 npm install
 npm run dev
