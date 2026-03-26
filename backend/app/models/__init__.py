@@ -9,7 +9,8 @@ from .schemas import (
     AnalysisRequest,
     UploadResponse,
     AnalysisResponse,
-    ScreeningProgress
+    ScreeningProgress,
+    Job
 )
 
 __all__ = [
@@ -23,5 +24,6 @@ __all__ = [
     "AnalysisRequest",
     "UploadResponse",
     "AnalysisResponse",
-    "ScreeningProgress"
+    "ScreeningProgress",
+    "Job"
 ]

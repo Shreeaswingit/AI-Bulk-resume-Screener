@@ -13,6 +13,13 @@ class Settings(BaseSettings):
     rate_limit_enabled: bool = False
     rate_limit_delay: int = 5
     
+    # Email Settings
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 465
+    smtp_user: str = ""
+    smtp_password: str = ""  # This should be an App Password, not your regular password
+    smtp_from: str = ""
+    
     class Config:
         env_file = ".env"
         extra = "ignore"

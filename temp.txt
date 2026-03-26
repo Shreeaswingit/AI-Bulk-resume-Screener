@@ -1,0 +1,453 @@
+1 
+ 1. Introduction  
+Enterprise Resource Planning (ERP) systems have become an integral component of 
+modern organizations by enabling the seamless integration of business processes, data, and 
+information flow across multiple departments. In today’s competitive and fast -paced b usiness 
+environment, organizations can no longer operate efficiently using isolated or standalone 
+systems. ERP systems address this challenge by providing a unified platform that connects 
+finance, operations, administration, and management functions into a  single, coherent 
+framework.  
+In large enterprises —particularly manufacturing and export -oriented organizations —
+the efficiency of operations is heavily dependent on the accuracy, consistency, and availability 
+of foundational data maintained within the system. Business activities such a s financial 
+accounting, asset management, reporting, and compliance rely on predefined structures and 
+reference data. Any inconsistency at this foundational level can lead to cascading errors across 
+the organization, affecting productivity, financial accur acy, and strategic decision -making.  
+At the core of every ERP system lies master data, which defines the structural blueprint 
+of enterprise operations. Master data includes critical information such as organizational units, 
+financial groupings, account codes, asset classifications, banking de tails, and user credentials. 
+This data is relatively stable but is referenced continuously by transactional processes and 
+reporting mechanisms. As a result, master data acts as the backbone of all ERP functionalities, 
+ensuring uniform interpretation of inf ormation across departments.  
+Poorly managed master data can result in serious organizational issues such as incorrect 
+financial statements, duplicate records, operational delays, audit non -compliance, and 
+unreliable management reports. Therefore, effective master data management is no t merely a 
+technical requirement but a strategic necessity for enterprise governance and operational 
+control.   
+The ERP Master Module developed in this project aims to address these challenges by 
+providing a structured, centralized, and scalable solution for managing critical master data. The 
+system is designed using modern software technologies . By establishing a robust master data 
+foundation, the project demonstrates how a well -designed ERP master module can significantly 
+enhance data integrity, operational efficiency, and overall system effectiveness.  
+ 
+2 
+ 1.1 Importance Of The Project  
+The importance of this project lies in addressing one of the most critical challenges in enterprise 
+systems —effective master data management. In ERP environments, master data serves as a 
+single source of truth for all business operations. Accurate master d ata ensures consistency 
+across departments and enhances the reliability of financial and operational reports.  
+This project is significant for the following reasons:  
+• Ensures centralized and standardized management of ERP master data  
+• Reduces data duplication and minimizes manual errors  
+• Improves operational efficiency through structured workflows  
+• Supports financial compliance and audit requirements  
+• Provides a scalable foundation for future ERP modules  
+• Enhances user productivity through a professional and intuitive interface  
+The project provides hands -on exposure to enterprise -level system analysis, architectural 
+design, database modeling, and full -stack application development.  
+1.2 General Organization of the Report  
+The report is structured to progress logically from conceptual understanding to implementation 
+details, providing a comprehensive guide for readers:  
+• Chapter 1 – Introduction: Presents the background, project importance, objectives, and 
+organizational context.  
+• Chapter 2 – System Analysis: Discusses the limitations of existing systems, problem 
+statements, proposed solutions, and system requirements.  
+• Chapter 3 – System Design: Explains architecture, database schema, workflows, and 
+graphical user interface design principles.  
+• Chapter 4 – Project Description: Provides module -wise explanation, functional scope, 
+and real -world operational scenarios.  
+• Chapter 5 – System Development: Details the technologies, tools, code logic, 
+pseudocode, and development methodology. . 
+3 
+ 1.3 Organization Profile  
+Ambattur Clothing Company (ACC) is a leading garment manufacturing and exporting 
+organization that has established a strong presence in the global apparel industry since its 
+inception in 1981. Beginning its operations with a single manufacturing unit, the company has 
+grown consistently over the decades into a large -scale enterprise known for producing high -
+quality garments for several internationally renowned fashion brands. ACC’s growth journey 
+reflects its strategic vision, operational excellence, and unw avering commitment to quality and 
+customer satisfaction.  
+The organization operates multiple state -of-the-art manufacturing facilities across India, each 
+equipped with advanced machinery and modern production technologies. These facilities 
+adhere to standardized manufacturing processes and stringent quality contr ol measures to 
+ensure uniformity, efficiency, and precision at every stage of production. ACC’s robust 
+operational framework enables it to meet international quality standards and maintain long -
+term partnerships with global clients.  
+ACC’s strong global presence is further reinforced by an extensive supplier and logistics 
+network that supports efficient sourcing of raw materials, streamlined production planning, and 
+timely delivery of finished products. The company places significant e mphasis on innovation, 
+continuous process improvement, and the adoption of best manufacturing practices to remain 
+competitive in the international market.  
+Beyond operational excellence, Ambattur Clothing Company is committed to sustainability, 
+ethical manufacturing, and corporate social responsibility. The organization actively 
+implements environmentally responsible practices, promotes employee welfare, and complies 
+with international labor and safety standards. These initiatives not only contribute to 
+sustainable growth but also strengthen the company’s reputation as a socially responsible 
+enterprise.  
+As a large -scale manufacturing organization, ACC manages complex business operations 
+involving financial structures, asset management, organizational hierarchies, and banking 
+relationships. Efficient management of such complexity requires reliable, accurat e, and 
+integrated information systems. Enterprise Resource Planning (ERP) systems play a critical 
+role in supporting these requirements by enabling centralized data management, improved 
+transparency, and effective decision -making.  
+4 
+ 2. System Analysis  
+2.1 Problem Definition  
+In today’s rapidly growing and complex business environment, the management of ERP 
+master data remains a critical challenge for many organizations. Despite its importance, 
+numerous enterprises still rely on outdated, semi -manual, or fragmented systems that  lack 
+adequate standardization, validation, and centralized control. These legacy systems were 
+initially designed to handle limited volumes of data and basic operational needs, which may 
+have been sufficient for smaller organizations or simpler processes. However, as organizations 
+expand in size, operational complexity, and geographic reach, these systems become 
+increasingly inefficient, error -prone, and difficult to maintain. The growing volume of master 
+data, coupled with inconsistent or unstructured mana gement practices, frequently leads to 
+duplicate records, conflicting classifications, missing information, and increased maintenance 
+efforts.  
+Master data is the foundation of enterprise operations, defining organizational 
+hierarchies, financial groupings, asset categories, supplier and customer profiles, and other 
+critical reference points. Inaccurate, inconsistent, or outdated master data can d irectly disrupt 
+essential business processes such as accounting, procurement, inventory management, asset 
+tracking, reporting, and regulatory compliance. For example, duplicate account codes may 
+result in incorrect financial statements, while inconsistent asset classifications can lead to errors 
+in depreciation calculations and inventory reporting. Operational delays in production 
+planning, procurement approvals, and supply chain execution may also occur, reducing overall 
+efficiency.  
+Another key limitation of existing systems is the lack of scalability and flexibility. 
+Modifying, updating, or restructuring master data often requires extensive manual intervention, 
+which not only increases the risk of errors but also consumes significant  time and resources. 
+Weak security measures, limited role -based access, and the absence of comprehensive audit 
+trails further compound governance and compliance challenges. These issues underscore the 
+urgent need for a modern, centralized, and structured E RP master management system that 
+ensures accurate, secure, and reliable data, while enhancing operational efficiency, supporting 
+informed decision -making, and maintaining regulatory compliance across the organization.  
+ 
+5 
+ 2.2 Existing System  
+Limited automation, rigid structures, and a dependence on individual expertise largely 
+characterize the current systems used for ERP master data management . Master data entry and 
+maintenance are heavily manual, with minimal system -driven validation or standardization. As 
+a result, the accuracy and consistency of the data largely depend on the diligence and expertise 
+of the user, rather than on robust automat ed processes. This reliance on manual effort increases 
+the likelihood of errors, duplication, and inconsistencies, which can propagate across different 
+departments and processes.  
+Structurally, the existing system lacks a well -defined hierarchy for managing financial 
+and organizational classifications , including  account groups, cost centers, asset categories, and 
+unit structures. This absence of structured relationships makes it challenging to maintain 
+consistency across departments and results in discrepancies in reporting and operational data. 
+For example, inco nsistencies in account codes can lead to mismatched financial reports, while 
+unstandardized asset categories may confuse  asset tracking or depreciation calculations.  
+From a compliance perspective, the system provides inadequate support for audit trails 
+and historical tracking of changes. This deficiency makes verification, reporting, and 
+regulatory compliance a time -consuming and error -prone process. In addition, the s ystem’s 
+usability is a major concern. The interface is outdated, non -responsive, and unintuitive, which 
+hampers efficiency and increases reliance on extensive user training. New employees often 
+struggle to navigate the system effectively, resulting in oper ational delays and reduced 
+productivity.  
+Security is another critical limitation. Weak access controls and the absence of role -
+based permissions expose sensitive master data to potential unauthorized modifications. 
+Furthermore, the system is not designed to scale with growing business requirement s, limiting 
+its ability to accommodate increased data volumes or future integration with advanced ERP 
+modules.  
+Overall, the limitations of the existing ERP master data management system —ranging 
+from poor automation, inconsistent data, and lack of standardization to weak security and 
+limited scalability —significantly affect data integrity, operational efficiency, an d compliance 
+readiness. These challenges underscore the pressing need for a modern, centralized, and 
+structured ERP master management solution , which can provide reliable, consistent, and secure 
+master data to support all critical business processes.  
+6 
+ 2.3 Proposed System  
+To address the limitations of existing ERP master data management systems, the 
+proposed system is a modern, web -based ERP Master Module  that provides a centralized, 
+structured, and secure platform for managing all critical master data. Unlike legacy systems, 
+this solution emphasizes data accuracy, consistency, scalability, and user -friendliness. The 
+system is developed using C# (.NET)  for backend processing, Microsoft SQL Server  for robust 
+database management, and React -based frontend technologies  for a res ponsive and intuitive 
+user interface. This combination of technologies ensures efficient handling of large datasets 
+while providing a smooth user experience.  
+The proposed system enforces strict validation rules and relational integrity  to prevent 
+duplicate or inconsistent records. For example, when adding a new account, the system 
+automatically checks for existing entries and validates all required fields to maintain 
+uniformity. A modular architecture  allows each master module —such as organizational units, 
+account codes, asset categories, and user management —to be maintained independently, 
+facilitating future expansion and easier maintenance. Role -based access c ontrol  ensures that 
+only authorized personnel can modify sensitive data, enhancing security. Furthermore, cloud -
+based support via Microsoft Azure  enables version control, centralized storage, and easy 
+scalability for growing organizational needs.  
+Key advantages of the system include a centralized and normalized database , improved 
+operational efficiency, accurate reporting, and compliance readiness. The modern, responsive 
+interface reduces training time and enhances user productivity.  
+Advantages of the proposed system include:  
+• Centralized and normalized database  
+• Improved data accuracy and consistency  
+• Modern, responsive, and user -friendly interface  
+• Scalable and maintainable architecture  
+• Enhanced security and access control  
+• Improved operational efficiency and reporting reliability  
+ 
+7 
+ 2.4 System Requirements  
+The system has specific hardware and software requirements to ensure optimal performance.  
+2.4.1 Hardware Requirements  
+Processor  Intel i3 or higher  
+RAM  Minimum 8 GB  
+Storage  256 GB SSD or higher  
+Display Resolution  1366 × 768 or above  
+ 
+2.4.2 Software Requirements  
+Operating System  Windows 10 / Windows 11  
+Backend  C# (.NET)  
+Frontend  React, HTML5, CSS3, JavaScript  
+UI Frameworks  Bootstrap, Reactstrap  
+Database  Microsoft SQL Server  
+IDE Visual Studio, Visual Studio Code  
+Repository & Cloud Platform  Microsoft Azure  
+Browser  Google Chrome / Microsoft Edge  
+ 
+ 
+ 
+8 
+ 3. System Design  
+3.1 Architectural Design  
+The system follows a three -tier architecture consisting of the Presentation Layer, Application 
+Layer, and Database Layer. This architecture ensures separation of concerns, improved 
+maintainability, and enhanced security.  
+3.1.1 Data Flow Diagram  
+The following DFD represents the flow of data in the system, showing Login, Main Page, 
+Master hierarchy, Bank management, and Unit master interactions.  
+1. Login DFD Content (The Gateway)  
+This module captures the initial session parameters. The flow ensures that the user is not just 
+authenticated by password, but is also mapped to the correct financial context.  
+ 
+• Inputs:  Financial Year, Type, Unit Code, Date of Processing (DOP), Username, and 
+Password.  
+• Process:  The system validates the User/PSD  against the Staff Master . It then checks if 
+the Unit Code  is active and if the DOP  falls within the selected Financial Year . 
+• Output:  A valid session token containing the Entity ID  and Unit Code , which acts as a 
+global filter for all subsequent master pages.  
+ 
+
+9 
+ 2. Main Page & Master Hierarchy DFD Content  
+This represents the core organizational structure of your accounting system. The data flow 
+follows a strict parent -child dependency.  
+ 
+• Main Group:  The top -level category (e.g., Assets, Liabilities). It captures the Acc 
+Source  and Main Group Name . 
+• Group:  Inherits the Main Group  ID and adds a specific Group Name . 
+• Sub Group:  Inherits both Main Group  and Group  IDs. This is where specific asset 
+categories or expense types are defined (including depreciation rates like SLM/WDV 
+found in your CSV files).  
+
+10 
+ • Account Code Master:  The final destination. It pulls the entire hierarchy (Source → 
+Main → Group → Sub) and assigns specific Account Details , Schedules , and 
+Nomenclature . 
+• Logic:  The Last Code  attribute ensures that the account numbering remains sequential 
+within that specific sub -group.  
+3. Bank & Unit Master DFD Content  
+A. Bank Master (The Financial Data Repository)  
+This level captures the static details of the banking institution.  
+• Extended Data Points:  Beyond account numbers, it captures IFSC/Swift Codes , Bank 
+Branch specific contacts , and Overdraft (OD) Limits . 
+• Data Flow:  It receives an Account Code  from the Account Code Master . This creates a 
+"Pointer" in the General Ledger so that any transaction involving this bank is 
+automatically categorized under the correct accounting head.  
+• Validation:  It ensures that no two banks share the same Bank Code  within a single 
+EntityID . 
+B. Bank Control (The Operational Logic Layer)  
+This acts as the "Traffic Controller" for financial operations.  
+• Functional Scope:  It manages the User-Bank Mapping . It defines which users have the 
+authority to view or process payments for specific accounts.  
+• BRS Logic:  It tracks the "Last Reconciled Date." When a transaction occurs, the Bank 
+Control layer checks the Active BRS  flag to determine if the transaction requires 
+immediate reconciliation or if it can be batched.  
+• Flags & Utype:  The Utype  (Usage Type) flag determines if the bank is used for Payroll, 
+Vendor Payments, or Petty Cash , ensuring funds are not misallocated.  
+C. Unit Master (The Organizational Anchor)  
+The Unit Master is the root for all departmental data.  
+11 
+ • Authorized Signatories:  This module stores the digital identities or reference names of 
+personnel authorized to approve vouchers. In the DFD, this flows into the Bill Passing  
+and Transaction  modules.  
+• Cash Management:  It sets the Cash -in-Hand  ceiling. If a unit attempts to record a cash 
+transaction exceeding the Cash Amt  limit defined here, the system triggers a "Control 
+Violation" alert.  
+• GST & Compliance:  It acts as the central point for Tax Reporting . Since GST is often 
+unit-specific (based on location), this master ensures that the correct tax state -code is 
+applied to every invoice generated by that specific branch.  
+ 
+ 
+3.2 GUI Design  
+The graphical user interface is designed using React and Reactstrap, ensuring responsiveness 
+and consistency. The interface follows ERP standards with structured forms, dropdown 
+controls, and tabular data presentation.  
+LOGIN: 
+ 
+
+12 
+  
+ 
+ 
+ 
+
+13 
+ MAIN GROUP MASTER:  
+ 
+ 
+
+14 
+  
+GROUP MASTER:  
+ 
+ 
+ 
+
+15 
+ SUB GROUP MASTER : 
+ 
+ 
+ 
+ACCOUNT CODE MASTER:  
+ 
+
+16 
+  
+UNIT CREATION  
+ 
+ 
+ 
+ 
+ 
+
+17 
+ BANK MASTER:  
+ 
+ 
+ 
+ 
+3.3 UML DIAGRAM  
+The UML (Unified Modeling Language) structure represents a high -integrity financial 
+system where Login sessions are anchored by Financial Year and UnitCode. Data flows through 
+a nested hierarchy —from Main Group to Account Master —ensuring strict classificat ion. These 
+accounts link to Bank and Unit Masters, governed by Bank Control logic for operational 
+compliance.  
+ 
+
+18 
+  
+ 
+Module  Primary Key / Index  Key Attributes for UML  
+Login  UserID  Financial Year, UnitCode, 
+DOP  
+Main Group  MainCode  Acc Source, EntityID  
+Group  GroupCode  Parent MainCode, 
+GroupName  
+Sub Group  SubCateCode  DepnType, DepnRate, 
+Category  
+Account Master  AccCode  Schedule, Nomenclature, 
+LastCode  
+Bank Master  BankCode  A/C No, IFSC, Address, Pin  
+Bank Control  ControlID  UnitCode, BRS Flag, Utype  
+Unit Master  UnitCode  GST No, Cash Limit, Status  
+ 
+ 
+
+19 
+ 3.4 ER DIA GRAM  
+ 
+The ER (Entity -Relationship) architecture establishes a structured data flow beginning 
+with Login  authentication, where a user’s session is bound to a specific Financial Year  and 
+Unit. This initiates a strictly hierarchical master data tree: Main Groups  define primary 
+accounting sources, which cascade into Groups , then granular Sub-Groups  (containing 
+depreciation logic), and finally unique Account Codes . 
+These Account Codes serve as the bridge to operational entities, linking directly to the 
+Bank Master  and Unit Master . Financial integrity is maintained via Bank Control  logic, which 
+manages unit -specific bank reconciliations and usage flags, ensuring every transaction aligns 
+with systemic compliance and organizational limits.  
+ 
+ 
+
+20 
+ 4. Project Description  
+The ERP Master Module is designed as a centralized and comprehensive solution for 
+managing core master data essential for enterprise operations. Master data acts as the 
+foundation for all ERP functionalities, including finance, asset management, human reso urces, 
+procurement, and reporting. By providing a unified platform to create, maintain, and validate 
+critical data, the ERP Master Module ensures consistency, accuracy, and integrity across all 
+organizational processes.  
+The system manages a wide range of master data components, including organizational 
+units, account codes, asset classifications, supplier and customer information, banking details, 
+and user credentials. Each component is structured hierarchically and valid ated against 
+predefined rules, ensuring that data entered into the system adheres to organizational standards 
+and avoids redundancy or duplication. This structured approach enables the organization to 
+maintain a single source of truth, which is critical fo r operational efficiency and informed 
+decision -making.  
+The ERP Master Module also establishes the groundwork for integration with future 
+ERP modules. For example, finance and accounting modules rely heavily on accurate account 
+codes and financial groupings, while asset management modules depend on precise asse t 
+classifications and tracking information. Reporting and business intelligence functions are also 
+supported by the module, as clean and consistent master data enables accurate analytics, 
+compliance reporting, and strategic planning.  
+In addition, the module incorporates role -based access control, ensuring that only 
+authorized personnel can modify sensitive master data. This enhances security and governance 
+while providing audit trails for compliance purposes. The modern, web -based inte rface, built 
+using React and Bootstrap, ensures responsiveness, usability, and minimal training 
+requirements, allowing employees to efficiently perform their tasks.  
+Overall, the ERP Master Module acts as the backbone of the organization’s ERP 
+ecosystem. By centralizing, standardizing, and securing master data, it significantly improves 
+operational efficiency, reduces errors, supports regulatory compliance, and provide s a scalable 
+foundation for future ERP development and business growth.  
+ 
+ 
+21 
+ 5. System Development  
+The development of the ERP Master Module involved a combination of modern software 
+technologies, database systems, and frontend frameworks to ensure a secure, scalable, and user -
+friendly solution. The system is designed as a web-based application , providing centralized 
+access to master data while maintaining data integrity and operational efficiency across the 
+enterprise.  
+5.1 Languages and Tools Used  
+The backend of the system is developed using C# (.NET) , which offers a robust environment 
+for creating scalable, object -oriented applications with strong type -checking and support for 
+multi -layered architecture. Microsoft SQL Server  serves as the relational database management 
+system, providing a secure, normalized, and efficient structure for storing master data. SQL 
+Server ensures data integrity through relational constraints, indexing, and transaction 
+management.  
+For the frontend, React.js  is utilized to build a responsive, modular, and dynamic interface. 
+Combined with HTML5, CSS3, and JavaScript , the interface provides interactive forms, 
+structured tables, and intuitive navigation. Bootstrap and Reactstrap  frameworks enhance the 
+UI design by offering pre -built, responsive components that adhere to modern ERP interface 
+standards, reducing development time and improving user experience.  
+The system also integrates Microsoft Azure  for cloud -based repository support, enabling 
+version control, centralized storage, scalability, and secure remote access. Azure ensures that 
+master data can be maintained and accessed reliably across multiple locations while supporting 
+future expansion an d integration with additional ERP modules.  
+5.2 Development Workflow and Pseudocode  
+The development workflow follows a structured approach. The system first initializes  the 
+environment and authenticates users through role -based login. Upon successful authentication, 
+the dashboard  displays all available master modules. Users can select a module, input relevant 
+master data, and submit it. Each entry undergoes validation  against predefined rules to prevent 
+duplication, enforce standardization, and maintain relational integrity. Once validated, the data 
+is securely stored in the database. If a uthentication fails or validation errors occur, the system 
+displays appropriate error messages to guide the user.  
+22 
+ The pseudocode summarizes this process:  
+1) START  
+2) Initialize system  
+3) Authenticate user 
+4) IF authentication successful THEN  
+5) Display dashboard  
+6) FOR  each  master module  
+7) Accept input  
+8) Validate  data  
+9) Store in database  
+10) END  FOR  
+11) ELSE  
+12) Display error message  
+13) END  IF 
+14) STOP  
+This structured approach ensures that the ERP Master Module provides a reliable, secure, and 
+efficient solution for managing enterprise master data, laying a strong foundation for future 
+ERP development and operational excellence.  
+ 

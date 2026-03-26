@@ -7,14 +7,17 @@ import {
     LogOut,
     Moon,
     Sun,
-    Target
+    Target,
+    Briefcase
 } from 'lucide-react';
 
 export default function Sidebar({ activeSection, onSectionChange, onThemeToggle, isDarkMode, onLogout, user }) {
     const navItems = [
         { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+        { id: 'analytics', icon: Target, label: 'Analytics' },
         { id: 'upload', icon: Upload, label: 'Upload Resumes' },
         { id: 'candidates', icon: Users, label: 'Candidates' },
+        { id: 'jobs', icon: Briefcase, label: 'Jobs' }, // Added Jobs item
         { id: 'shortlisted', icon: Star, label: 'Shortlisted' },
         { id: 'settings', icon: Settings, label: 'Settings' },
     ];

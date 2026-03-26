@@ -20,13 +20,14 @@ export async function uploadResumes(files) {
 }
 
 // Analyze resumes with job description
-export async function analyzeResumes(jobDescription, resumeIds = null) {
+export async function analyzeResumes(jobDescription, resumeIds = null, job_id = null) {
   const response = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      job_id: job_id,
       job_description: jobDescription,
       resume_ids: resumeIds,
     }),
@@ -81,6 +82,38 @@ export async function getProgress() {
 // Get statistics
 export async function getStats() {
   const response = await fetch(`${API_BASE}/stats`);
+  return response.json();
+}
+
+// Get all jobs
+export async function getJobs() {
+  const response = await fetch(`${API_BASE}/jobs`);
+  return response.json();
+}
+
+// Get candidates for a specific job
+export async function getJobCandidates(jobId) {
+  const response = await fetch(`${API_BASE}/jobs/${jobId}/candidates`);
+  return response.json();
+}
+
+// Update job details
+export async function updateJob(jobId, updates) {
+  const response = await fetch(`${API_BASE}/jobs/${jobId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updates),
+  });
+  return response.json();
+}
+
+// Delete a job
+export async function deleteJob(jobId) {
+  const response = await fetch(`${API_BASE}/jobs/${jobId}`, {
+    method: 'DELETE',
+  });
   return response.json();
 }
 

@@ -47,9 +47,9 @@ class CandidateMatcher:
         return {
             'match_score': min(100.0, round(weighted_score, 1)),
             'skill_match_percentage': round(skill_score['required_percentage'], 1),
-            'matched_skills': matched_skills,
-            'missing_required_skills': skill_score['missing_required'],
-            'missing_preferred_skills': skill_score['missing_preferred'],
+            'matched_skills': [s.name for s in matched_skills if s.matched],
+            'missing_skills': skill_score['missing_required'] + skill_score['missing_preferred'],
+            'matched_skills_marked': matched_skills,
             'experience_fit': exp_score
         }
     
@@ -154,22 +154,47 @@ class CandidateMatcher:
             return 100.0
         else:
             # Penalty for less experience
-            return max(0, (candidate_years / required_years) * 100)
+            return max(0.0, (candidate_years / required_years) * 100)
     
     def _get_matched_skills(
         self,
         candidate_skills: List[Skill],
         required_skills: List[str]
     ) -> List[Skill]:
-        """Mark which skills are matched against requirements"""
+        """Mark which skills are matched and calculate individual skill match scores"""
         required_lower = [s.lower() for s in required_skills]
+        
+        proficiency_map = {
+            'expert': 100.0,
+            'advanced': 95.0,
+            'proficient': 85.0,
+            'intermediate': 70.0,
+            'competent': 60.0,
+            'basic': 40.0,
+            'beginner': 25.0,
+            'familiar': 20.0
+        }
         
         matched = []
         for skill in candidate_skills:
             skill_copy = skill.model_copy()
-            skill_copy.matched = self._skill_matches(skill.name.lower(), required_lower)
+            is_relevant = self._skill_matches(skill.name.lower(), required_lower)
+            skill_copy.matched = is_relevant
+            
+            # Determine score based on proficiency
+            prof = (skill.proficiency or '').lower()
+            score = 0.0
+            for key, val in proficiency_map.items():
+                if key in prof:
+                    score = val
+                    break
+            
+            if score == 0.0:
+                score = 75.0 # Default matched skill score
+                
+            skill_copy.match_score = score if is_relevant else 0.0
             matched.append(skill_copy)
-        
+            
         return matched
     
     def rank_candidates(
@@ -184,7 +209,9 @@ class CandidateMatcher:
             match_result = self.calculate_match(candidate, job_description)
             candidate.match_score = match_result['match_score']
             candidate.skill_match_percentage = match_result['skill_match_percentage']
-            candidate.skills = match_result['matched_skills']
+            candidate.skills = match_result['matched_skills_marked']
+            candidate.matched_skills = match_result['matched_skills']
+            candidate.missing_skills = match_result['missing_skills']
             scored_candidates.append(candidate)
         
         # Sort by match score descending

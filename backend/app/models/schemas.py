@@ -14,6 +14,7 @@ class Skill(BaseModel):
     proficiency: Optional[str] = None
     years: Optional[float] = None
     matched: bool = False
+    match_score: float = 0.0
 
 class Experience(BaseModel):
     company: str
@@ -39,6 +40,8 @@ class ContactInfo(BaseModel):
 
 class Candidate(BaseModel):
     id: str
+    job_id: Optional[str] = None
+    job_title: Optional[str] = None
     name: str
     filename: str
     status: CandidateStatus = CandidateStatus.PENDING
@@ -52,7 +55,12 @@ class Candidate(BaseModel):
     skill_match_percentage: float = 0.0
     strengths: List[str] = []
     concerns: List[str] = []
+    matched_skills: List[str] = []
+    missing_skills: List[str] = []
+    improvement_suggestions: List[str] = []
+    recommendation_category: Optional[str] = None # Selected, Considered, Rejected
     ai_recommendation: Optional[str] = None
+    duplicate_of: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.now)
     analyzed_at: Optional[datetime] = None
 
@@ -64,8 +72,17 @@ class JobDescription(BaseModel):
     min_experience_years: Optional[float] = None
     education_requirements: Optional[str] = None
 
+class Job(BaseModel):
+    id: str
+    title: str
+    description: str
+    created_at: datetime = Field(default_factory=datetime.now)
+    candidate_count: int = 0
+    avg_score: float = 0.0
+
 class AnalysisRequest(BaseModel):
-    job_description: JobDescription
+    job_id: Optional[str] = None # Link to existing job
+    job_description: JobDescription # Or create from new JD
     resume_ids: Optional[List[str]] = None
 
 class UploadResponse(BaseModel):

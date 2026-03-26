@@ -7,6 +7,8 @@ import StatsCards from './components/StatsCards';
 import CandidateCard from './components/CandidateCard';
 import CandidateModal from './components/CandidateModal';
 import ScreeningProgress from './components/ScreeningProgress';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
+import JobsSection from './components/JobsSection';
 import Login from './components/Login';
 import * as api from './services/api';
 import confetti from 'canvas-confetti';
@@ -25,9 +27,11 @@ function App() {
   const [fileContents, setFileContents] = useState({}); // Store file text for Puter AI
   const [statusMessage, setStatusMessage] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [apiStatus, setApiStatus] = useState(null); // Track API health
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   // Check API health on mount
   const checkApiHealth = async () => {
@@ -105,7 +109,11 @@ function App() {
   const loadCandidates = async () => {
     try {
       const data = await api.getCandidates();
-      setCandidates(data.candidates || []);
+      const items = data.candidates || [];
+      // Sort by score descending to assign ranks
+      items.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
+      items.forEach((c, i) => c.rank = i + 1);
+      setCandidates(items);
     } catch (error) {
       console.error('Failed to load candidates:', error);
     }
@@ -244,15 +252,26 @@ function App() {
   };
 
   const getFilteredCandidates = () => {
-    let filtered = candidates;
-
+    let list = candidates;
     if (activeSection === 'shortlisted') {
-      filtered = candidates.filter(c => c.status === 'shortlisted');
+      list = candidates.filter(c => c.status === 'shortlisted');
     } else if (filter !== 'all') {
-      filtered = candidates.filter(c => c.status === filter);
+      list = candidates.filter(c => c.status === filter);
     }
 
-    return filtered.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
+    if (selectedJobId) {
+      list = list.filter(c => c.job_id === selectedJobId);
+    }
+
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      list = list.filter(c =>
+        (c.name || '').toLowerCase().includes(term) ||
+        (c.contact?.email || '').toLowerCase().includes(term) ||
+        (c.skills || []).some(s => s.name.toLowerCase().includes(term))
+      );
+    }
+    return list.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
   };
 
   const renderContent = () => {
@@ -270,8 +289,9 @@ function App() {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-              gap: 'var(--spacing-xl)'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: 'var(--spacing-xl)',
+              marginBottom: 'var(--spacing-xl)'
             }}>
               <UploadZone
                 onFilesSelected={handleFilesSelected}
@@ -282,8 +302,37 @@ function App() {
                 isLoading={isAnalyzing}
               />
             </div>
+
+            {candidates.length > 0 && (
+              <div className="card" style={{ marginTop: 'var(--spacing-xl)' }}>
+                <div className="card-header">
+                  <h3 className="card-title">🏆 Top Ranking Candidates</h3>
+                  <button className="btn btn-ghost" onClick={() => setActiveSection('candidates')}>View All</button>
+                </div>
+                <div className="candidates-grid">
+                  {candidates.slice(0, 3).map(candidate => (
+                    <CandidateCard
+                      key={candidate.id}
+                      candidate={candidate}
+                      onView={handleViewCandidate}
+                      onShortlist={handleShortlist}
+                      onReject={handleReject}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         );
+
+      case 'analytics':
+        return <AnalyticsDashboard stats={stats} />;
+
+      case 'jobs':
+        return <JobsSection onSelectJob={(jobId) => {
+          setSelectedJobId(jobId);
+          setActiveSection('candidates');
+        }} />;
 
       case 'upload':
         return (
@@ -314,22 +363,44 @@ function App() {
               marginBottom: 'var(--spacing-xl)'
             }}>
               <h1>
-                {activeSection === 'shortlisted' ? 'Shortlisted Candidates ⭐' : 'All Candidates 👥'}
+                {activeSection === 'shortlisted' ? 'Shortlisted Candidates ⭐' : 
+                 selectedJobId ? `Candidates for ${candidates.find(c => c.job_id === selectedJobId)?.job_title || 'Position'} 👥` :
+                 'All Candidates 👥'}
               </h1>
-              {activeSection === 'candidates' && (
-                <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-                  {['all', 'analyzed', 'shortlisted', 'rejected'].map((f) => (
-                    <button
-                      key={f}
-                      className={`btn ${filter === f ? 'btn-primary' : 'btn-secondary'}`}
-                      onClick={() => setFilter(f)}
-                      style={{ textTransform: 'capitalize' }}
-                    >
-                      {f}
-                    </button>
-                  ))}
-                </div>
-              )}
+              <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+                {selectedJobId && (
+                  <button className="btn btn-secondary" onClick={() => setSelectedJobId(null)}>
+                    ⬅ Back to All
+                  </button>
+                )}
+                {activeSection === 'candidates' && (
+                <div style={{ display: 'flex', gap: 'var(--spacing-md)', alignItems: 'center' }}>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="Search candidates or skills..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      style={{ paddingLeft: '40px', width: '300px' }}
+                    />
+                    <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }}>🔍</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 'var(--spacing-xs)' }}>
+                    {['all', 'analyzed', 'shortlisted', 'rejected'].map((f) => (
+                      <button
+                        key={f}
+                        className={`btn ${filter === f ? 'btn-primary' : 'btn-secondary'}`}
+                        onClick={() => setFilter(f)}
+                        style={{ textTransform: 'capitalize', padding: 'var(--spacing-sm) var(--spacing-md)' }}
+                      >
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {progress.status !== 'idle' && (
