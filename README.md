@@ -14,7 +14,18 @@ An AI-powered platform for intelligent resume screening and automated candidate 
 
 ```bash
 cd backend
-pip install -r requirements.txt
+python -m venv venv (one time onl)
+venv\Scripts\activate
+pip install -r requirements.txt   (one time only)
+# Create .env file with GEMINI_API_KEY=your_key
+uvicorn app.main:app --reload --port 8000
+```
+### TARA SETUP
+```bash
+Make sure you open new terminal
+Make sure you are outside bakend folder if  you are inside backend folder type cd..
+venv\Scripts\activate
+cd backend
 # Create .env file with GEMINI_API_KEY=your_key
 uvicorn app.main:app --reload --port 8000
 ```
@@ -22,6 +33,15 @@ uvicorn app.main:app --reload --port 8000
 ### Frontend Setup
 
 ```bash
+cd frontend
+npm install
+npm run dev
+```
+### TARA SETUP
+```bash
+Make sure you open new terminal
+Make sure you are outside frondend/backend folder if  you are inside backend/frontend folder type cd..
+
 cd frontend
 npm install
 npm run dev
