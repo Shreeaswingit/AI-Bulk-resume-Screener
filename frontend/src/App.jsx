@@ -9,6 +9,7 @@ import CandidateModal from './components/CandidateModal';
 import ScreeningProgress from './components/ScreeningProgress';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import JobsSection from './components/JobsSection';
+import ShortlistedView from './components/ShortlistedView';
 import Login from './components/Login';
 import * as api from './services/api';
 import confetti from 'canvas-confetti';
@@ -351,8 +352,10 @@ function App() {
           </>
         );
 
-      case 'candidates':
       case 'shortlisted':
+        return <ShortlistedView />;
+
+      case 'candidates':
         const filteredCandidates = getFilteredCandidates();
         return (
           <>

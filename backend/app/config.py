@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     smtp_password: str = ""  # This should be an App Password, not your regular password
     smtp_from: str = ""
     
+    # Database Settings
+    database_url: str = "sqlite:///./shortlisted.db"
+    
     class Config:
         env_file = ".env"
         extra = "ignore"

@@ -1,8 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import screening_router
+from .routes import screening_router, auth_router
 from .config import get_settings
+from .models.database import engine, Base
+from .models import db_models # Import all models here
 import logging
+
+# Initialize database
+Base.metadata.create_all(bind=engine)
 
 # Configure logging
 logging.basicConfig(
@@ -29,6 +34,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(screening_router)
+app.include_router(auth_router)
 
 
 @app.get("/")

@@ -1,5 +1,5 @@
 from .schemas import (
-    Candidate,
+    Candidate as CandidateSchema,
     CandidateStatus,
     Skill,
     Experience,
@@ -10,8 +10,9 @@ from .schemas import (
     UploadResponse,
     AnalysisResponse,
     ScreeningProgress,
-    Job
+    Job as JobSchema
 )
+from .db_models import User, Job, Candidate
 
 __all__ = [
     "Candidate",

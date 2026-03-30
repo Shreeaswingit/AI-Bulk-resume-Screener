@@ -65,6 +65,15 @@ export async function shortlistCandidate(candidateId) {
   return response.json();
 }
 
+// Get all shortlisted candidates from database
+export async function getShortlistedCandidates() {
+  const response = await fetch(`${API_BASE}/shortlisted`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch shortlisted candidates');
+  }
+  return response.json();
+}
+
 // Reject candidate
 export async function rejectCandidate(candidateId) {
   const response = await fetch(`${API_BASE}/candidates/${candidateId}/reject`, {
@@ -134,6 +143,33 @@ export async function saveJobDescription(jobDescription) {
     },
     body: JSON.stringify(jobDescription),
   });
+  return response.json();
+}
+
+// Auth
+export async function login(username, password) {
+  const response = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Login failed');
+  }
+  return response.json();
+}
+
+export async function register(username, password, full_name) {
+  const response = await fetch(`${API_BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password, full_name }),
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Registration failed');
+  }
   return response.json();
 }
 
