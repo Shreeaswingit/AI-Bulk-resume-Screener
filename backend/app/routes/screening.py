@@ -164,6 +164,8 @@ async def analyze_resumes(request: AnalysisRequest, db: Session = Depends(get_db
         candidate.matched_skills = analysis.get("matched_skills", [])
         candidate.missing_skills = analysis.get("missing_skills", [])
         candidate.ai_recommendation = analysis.get("ai_recommendation", "")
+        # Save AI-provided scores directly — do NOT re-score with empty skills later
+        candidate.match_score = float(analysis.get("match_score", 0) or 0)
         candidate.status = CandidateStatus.ANALYZED
         candidate.analyzed_at = datetime.utcnow()
         candidate.job_id = batch_job_id
@@ -171,31 +173,28 @@ async def analyze_resumes(request: AnalysisRequest, db: Session = Depends(get_db
         
         db.commit()
         
-        # Mapping to Schema for response
+        # Build schema with the AI score already set
         c_schema = CandidateSchema(
             id=candidate.id,
             name=candidate.name,
             filename="",
             status=CandidateStatus.ANALYZED,
-            match_score=0.0, # Will be updated by matcher
+            match_score=candidate.match_score,
+            total_experience_years=candidate.total_experience,
             summary=candidate.summary,
             strengths=candidate.strengths,
+            concerns=candidate.concerns,
             missing_skills=candidate.missing_skills,
             matched_skills=candidate.matched_skills,
             ai_recommendation=candidate.ai_recommendation
         )
         analyzed_candidates_history.append(c_schema)
 
-    # Rank & Update Scores
-    ranked = candidate_matcher.rank_candidates(analyzed_candidates_history, request.job_description)
-    for rc in ranked:
-        db_c = db.query(db_models.Candidate).filter(db_models.Candidate.id == rc.id).first()
-        if db_c:
-            db_c.match_score = rc.match_score
-    db.commit()
+    # Sort by AI score (already saved to DB) — do NOT re-run calculate_match with empty skills
+    analyzed_candidates_history.sort(key=lambda x: x.match_score, reverse=True)
     
     screening_progress = {"status": "complete", "progress": 100, "current_file": ""}
-    return AnalysisResponse(message=f"Analyzed {len(ranked)} candidates", total_analyzed=len(ranked), candidates=ranked)
+    return AnalysisResponse(message=f"Analyzed {len(analyzed_candidates_history)} candidates", total_analyzed=len(analyzed_candidates_history), candidates=analyzed_candidates_history)
 
 @router.get("/candidates", response_model=CandidatesListResponse)
 async def get_candidates(status: Optional[str] = None, min_score: Optional[float] = None, job_id: Optional[str] = None, limit: int = 100, db: Session = Depends(get_db)):

@@ -79,6 +79,9 @@ class AIAnalyzer:
     async def analyze_resume(self, resume_text: str, job_description: Optional[Dict] = None) -> Dict[str, Any]:
         """Analyze a resume and extract structured information"""
         
+        # Ensure model is initialized (safety net for any bare instances)
+        self.ensure_initialized()
+        
         if not self.model and not self.client:
             logger.error("AI model not initialized")
             self.api_error = "AI not configured. Please add GEMINI_API_KEY or OPENROUTER_API_KEY to backend/.env"
@@ -355,5 +358,5 @@ def get_ai_analyzer():
         _ai_analyzer_instance.ensure_initialized()
     return _ai_analyzer_instance
 
-# For backwards compatibility if needed, but better to call get_ai_analyzer()
-ai_analyzer = AIAnalyzer() # Keep it but it's now empty-shell until ensure_initialized is called
+# Module-level singleton — always use the initialized instance
+ai_analyzer = get_ai_analyzer()

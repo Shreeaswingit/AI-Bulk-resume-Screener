@@ -43,7 +43,7 @@ class Candidate(BaseModel):
     job_id: Optional[str] = None
     job_title: Optional[str] = None
     name: str
-    filename: str
+    filename: Optional[str] = ""
     status: CandidateStatus = CandidateStatus.PENDING
     contact: Optional[ContactInfo] = None
     summary: Optional[str] = None
