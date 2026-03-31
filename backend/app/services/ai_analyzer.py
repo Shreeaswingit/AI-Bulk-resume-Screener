@@ -3,11 +3,12 @@ import logging
 from typing import Optional, List, Dict, Any
 import asyncio
 import time
-import google.generativeai as genai
 try:
     from openai import OpenAI
 except ImportError:
     OpenAI = None
+# Move genai import inside to speed up startup
+genai = None 
 from ..config import get_settings
 from ..models import Skill, Experience, Education, ContactInfo
 
@@ -23,7 +24,12 @@ class AIAnalyzer:
         self.provider = None
         self.api_error = None  # Track API errors
         self.api_status = "unknown"  # Track API status
-        self._initialize_model()
+        # Don't initialize in constructor to avoid import-time hangs
+    
+    def ensure_initialized(self):
+        """Initialize models lazily on first use"""
+        if self.model is None and self.client is None and self.provider is None:
+            self._initialize_model()
     
     def _initialize_model(self):
         """Initialize the AI model (Gemini or OpenRouter)"""
@@ -34,6 +40,12 @@ class AIAnalyzer:
             logger.error("OpenAI package import FAILED.")
 
         try:
+            # Lazy imports for performance
+            global genai
+            if genai is None:
+                import google.generativeai as g
+                genai = g
+                
             # Check for OpenRouter first
             logger.info(f"OpenRouter Key configured: {bool(self.settings.openrouter_api_key)}")
             if self.settings.openrouter_api_key:
@@ -99,8 +111,13 @@ class AIAnalyzer:
                         )
                         response_text = completion.choices[0].message.content
                     elif self.provider == "gemini" and self.model:
-                        response = self.model.generate_content(prompt)
-                        response_text = response.text
+                        # Ensure we don't have blockages here
+                        try:
+                            response = self.model.generate_content(prompt)
+                            response_text = response.text
+                        except Exception as gemini_e:
+                            logger.error(f"Gemini generation error: {str(gemini_e)}")
+                            raise
                     
                     self.api_error = None
                     self.api_status = "working"
@@ -328,5 +345,15 @@ IMPORTANT: Return ONLY the JSON object, no markdown formatting, no code blocks, 
         return sorted_candidates
 
 
-# Singleton instance
-ai_analyzer = AIAnalyzer()
+# Lazy singleton access
+_ai_analyzer_instance = None
+
+def get_ai_analyzer():
+    global _ai_analyzer_instance
+    if _ai_analyzer_instance is None:
+        _ai_analyzer_instance = AIAnalyzer()
+        _ai_analyzer_instance.ensure_initialized()
+    return _ai_analyzer_instance
+
+# For backwards compatibility if needed, but better to call get_ai_analyzer()
+ai_analyzer = AIAnalyzer() # Keep it but it's now empty-shell until ensure_initialized is called

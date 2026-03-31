@@ -2,20 +2,16 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routes import screening_router, auth_router
 from .config import get_settings
-from .models.database import engine, Base
+from .models.database import engine, Base, SessionLocal
 from .models import db_models # Import all models here
 import logging
+from passlib.context import CryptContext
 
-# Initialize database
-Base.metadata.create_all(bind=engine)
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logger = logging.getLogger("uvicorn.error")
 
 settings = get_settings()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI(
     title="AI Resume Screener API",
@@ -36,15 +32,41 @@ app.add_middleware(
 app.include_router(screening_router)
 app.include_router(auth_router)
 
+@app.on_event("startup")
+async def startup_event():
+    # Initialize database
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database initialized successfully.")
+        
+        # Create default admin user if it doesn't exist
+        db = SessionLocal()
+        try:
+            admin_user = db.query(db_models.User).filter(db_models.User.username == "admin").first()
+            if not admin_user:
+                hashed_password = pwd_context.hash("admin")
+                new_admin = db_models.User(
+                    username="admin",
+                    password_hash=hashed_password,
+                    full_name="Administrator"
+                )
+                db.add(new_admin)
+                db.commit()
+                logger.info("Default admin user created.")
+        finally:
+            db.close()
+            
+    except Exception as e:
+        logger.error(f"Database initialization failed: {str(e)}")
 
 @app.get("/")
 async def root():
     return {
         "message": "AI Resume Screener API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "status": "running"
     }
-
 
 @app.get("/health")
 async def health_check():
@@ -58,4 +80,3 @@ async def health_check():
         "gemini_configured": ai_status.get("gemini_configured", False),
         "openrouter_configured": ai_status.get("openrouter_configured", False)
     }
-

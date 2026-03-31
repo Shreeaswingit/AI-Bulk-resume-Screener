@@ -63,6 +63,8 @@ class Candidate(BaseModel):
     duplicate_of: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.now)
     analyzed_at: Optional[datetime] = None
+    
+    model_config = {"from_attributes": True}
 
 class JobDescription(BaseModel):
     title: str
@@ -79,6 +81,12 @@ class Job(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     candidate_count: int = 0
     avg_score: float = 0.0
+    
+    model_config = {"from_attributes": True}
+
+class CandidatesListResponse(BaseModel):
+    candidates: List[Candidate]
+    total: int
 
 class AnalysisRequest(BaseModel):
     job_id: Optional[str] = None # Link to existing job

@@ -1,10 +1,11 @@
 import os
 import re
 from typing import Optional
-import PyPDF2
-import pdfplumber
-from docx import Document
 import logging
+# Move heavy imports inside to speed up startup
+pdfplumber = None
+PyPDF2 = None
+Document = None
 
 logger = logging.getLogger(__name__)
 
@@ -46,6 +47,11 @@ class ResumeParser:
         
         # Try pdfplumber first (better for complex layouts)
         try:
+            global pdfplumber
+            if pdfplumber is None:
+                import pdfplumber as p
+                pdfplumber = p
+            
             with pdfplumber.open(file_path) as pdf:
                 for page in pdf.pages:
                     page_text = page.extract_text()
@@ -59,6 +65,11 @@ class ResumeParser:
         
         # Fallback to PyPDF2
         try:
+            global PyPDF2
+            if PyPDF2 is None:
+                import PyPDF2 as p
+                PyPDF2 = p
+                
             with open(file_path, 'rb') as file:
                 reader = PyPDF2.PdfReader(file)
                 for page in reader.pages:
@@ -74,6 +85,11 @@ class ResumeParser:
     def _parse_docx(self, file_path: str) -> Optional[str]:
         """Extract text from DOCX file"""
         try:
+            global Document
+            if Document is None:
+                from docx import Document as D
+                Document = D
+                
             doc = Document(file_path)
             text_content = []
             

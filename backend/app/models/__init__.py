@@ -10,7 +10,8 @@ from .schemas import (
     UploadResponse,
     AnalysisResponse,
     ScreeningProgress,
-    Job as JobSchema
+    Job as JobSchema,
+    CandidatesListResponse
 )
 from .db_models import User, Job, Candidate
 

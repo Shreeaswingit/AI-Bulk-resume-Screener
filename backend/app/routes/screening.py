@@ -12,6 +12,7 @@ from sqlalchemy import func
 from ..models import (
     CandidateSchema, CandidateStatus, JobDescription, AnalysisRequest,
     UploadResponse, AnalysisResponse, ContactInfo, Skill, Experience, Education, JobSchema,
+    CandidatesListResponse,
     db_models
 )
 from ..models.database import get_db
@@ -196,7 +197,7 @@ async def analyze_resumes(request: AnalysisRequest, db: Session = Depends(get_db
     screening_progress = {"status": "complete", "progress": 100, "current_file": ""}
     return AnalysisResponse(message=f"Analyzed {len(ranked)} candidates", total_analyzed=len(ranked), candidates=ranked)
 
-@router.get("/candidates")
+@router.get("/candidates", response_model=CandidatesListResponse)
 async def get_candidates(status: Optional[str] = None, min_score: Optional[float] = None, job_id: Optional[str] = None, limit: int = 100, db: Session = Depends(get_db)):
     query = db.query(db_models.Candidate)
     if status: query = query.filter(db_models.Candidate.status == status)
@@ -204,7 +205,7 @@ async def get_candidates(status: Optional[str] = None, min_score: Optional[float
     if job_id: query = query.filter(db_models.Candidate.job_id == job_id)
     
     candidates = query.order_by(db_models.Candidate.match_score.desc()).limit(limit).all()
-    # Manual mapping to schema because candidate has many fields
+    # Pydantic will handle the mapping from db_models.Candidate to CandidateSchema
     return {"candidates": candidates, "total": query.count()}
 
 @router.get("/jobs")
@@ -222,7 +223,7 @@ async def get_jobs(db: Session = Depends(get_db)):
         })
     return {"jobs": results}
 
-@router.get("/candidates/{candidate_id}")
+@router.get("/candidates/{candidate_id}", response_model=CandidateSchema)
 async def get_candidate(candidate_id: str, db: Session = Depends(get_db)):
     candidate = db.query(db_models.Candidate).filter(db_models.Candidate.id == candidate_id).first()
     if not candidate: raise HTTPException(status_code=404, detail="Candidate not found")
@@ -240,7 +241,7 @@ async def shortlist_candidate(candidate_id: str, background_tasks: BackgroundTas
         job_title = candidate.job.title if candidate.job else "Position"
         background_tasks.add_task(email_service.notify_shortlisted, candidate.name, candidate.email, job_title)
         
-    return {"message": "Candidate shortlisted", "candidate": candidate}
+    return {"message": "Candidate shortlisted"} # Return simpler response to avoid circularity if possible
 
 @router.get("/shortlisted")
 async def get_shortlisted_candidates(db: Session = Depends(get_db)):
@@ -269,7 +270,7 @@ async def reject_candidate(candidate_id: str, background_tasks: BackgroundTasks,
     candidate.status = CandidateStatus.REJECTED
     db.commit()
     
-    return {"message": "Candidate rejected", "candidate": candidate}
+    return {"message": "Candidate rejected"}
 
 @router.get("/stats")
 async def get_stats(db: Session = Depends(get_db)):
